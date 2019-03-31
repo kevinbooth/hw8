@@ -42,7 +42,6 @@ public class PublisherImplementation implements PublisherInterface {
 			Event eventRandom = generateEvent(i);
 			List<Observer> rmObserver = new ArrayList<Observer>();
 			List<Observer> addObserver = new ArrayList<Observer>();
-			notifyObserver(eventRandom);
 
 			for (Observer o : subscribers) {
 				status = o.notifyObserver(eventRandom);
