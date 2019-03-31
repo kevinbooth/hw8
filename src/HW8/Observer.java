@@ -2,6 +2,6 @@ package HW8;
 
 public interface Observer {
 
-	public boolean notifyObserver(Event E);
+	public boolean notifyObserver(Event e);
 
 }
