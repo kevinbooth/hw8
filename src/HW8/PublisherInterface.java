@@ -6,5 +6,5 @@ public interface PublisherInterface {
 
 	public void removeObserver(Observer o);
 
-	public void notifyObserver(Observer o);
+	public void notifyObservers(Observer o);
 }

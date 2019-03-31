@@ -4,110 +4,90 @@ import java.util.*;
 
 public class PublisherImplementation implements PublisherInterface {
 
+	private List<Observer> subscribers = new ArrayList<Observer>();
+
 	public PublisherImplementation() {
 	}
 
-	private List<Observer> subscribers = new ArrayList<Observer>();
-
-	@Override
-	public void registerObserver(Observer O) {
-		subscribers.add(O);
-		System.out.println(" Observer is registered");
+	public void registerObserver(Observer o) {
+		subscribers.add(o);
 	}
 
-	@Override
-	public void removeObserver(Observer O) {
-		subscribers.remove(O);
-		System.out.println(" Observer is removed");
-
+	public void removeObserver(Observer o) {
+		subscribers.remove(o);
 	}
 
-	@Override
-	public void notifyObserver(Observer O) {
-		// TODO Auto-generated method stub
+	// not sure how to implement these
+	// might just leave them, as they seem to not be needed
+	public void notifyObservers(Observer o) {
 	}
 
-	public void notifyobserver(Event e) {
-
+	public void notifyObserver(Event e) {
 	}
 
-	private Event generateevent(int i) {
+	private Event generateEvent(int i) {
 		int data = (int) (Math.random() * 5000 + 1);
 		Event e = new Event(i, data);
 		return e;
 	}
 
 	public void runSimulation() {
-		PublisherImplementation pub = new PublisherImplementation();
-		Observer subOdds = new SubscriberOdds();
-		Observer subEvens = new SubscriberEvens();
-		Observer subThrees = new SubscriberThrees();
-
-		pub.registerObserver(subOdds);
-		pub.registerObserver(subEvens);
-		pub.registerObserver(subThrees);
-
 		int oddCount = 0;
 		int threeCount = 0;
-		boolean odd = false, three = false;
+		Integer[] arr = { 40, 80, 120, 160, 200 };
+		List<Integer> iterationStops = Arrays.asList(arr);
+		boolean status = false;
+
 		for (int i = 1; i < 201; i++) {
-			Event eventRandom = pub.generateevent(i);
+			Event eventRandom = generateEvent(i);
+			List<Observer> rmObserver = new ArrayList<Observer>();
+			List<Observer> addObserver = new ArrayList<Observer>();
+			notifyObserver(eventRandom);
 
-			pub.notifyobserver(eventRandom);
+			for (Observer o : subscribers) {
+				status = o.notifyObserver(eventRandom);
 
-			if (pub.subscribers.contains(subOdds)) {
-				odd = subOdds.notifyObserver(eventRandom);
-			}
-
-			if (pub.subscribers.contains(subThrees)) {
-				three = subThrees.notifyObserver(eventRandom);
-			}
-
-			boolean even = subEvens.notifyObserver(eventRandom);
-
-			if (odd && pub.subscribers.contains(subOdds)) {
-				if (oddCount >= 20) {
-					pub.removeObserver(subOdds);
-					System.out.println("The Subscriber Odds is removed because it is assigned to more than 20 events \n");
-					oddCount = 0;
-
-				} else {
-					oddCount += 1;
-					System.out.printf(" This event is %d Subscriber Odds ", oddCount, " \n ");
-
+				if (status && o.getClass() == SubscriberOdds.class) {
+					if (oddCount >= 20) {
+						rmObserver.add(o);
+						System.out.println("\tSubscriberOdds unregistered: assigned to 20 events");
+					} else {
+						oddCount += 1;
+						System.out.printf("\tSubscriberOdds event count: %d\n", oddCount);
+					}
+				} else if (status && o.getClass() == SubscriberThrees.class) {
+					if (threeCount >= 6) {
+						rmObserver.add(o);
+						System.out.println("\tSubscriberThrees unregistered: assigned to 6 events");
+					} else {
+						threeCount += 1;
+						System.out.printf("\tSubscriberThrees event count: %d\n", threeCount);
+					}
+				} else if (iterationStops.contains(i) && o.getClass() == SubscriberEvens.class) {
+					if (oddCount >= 20) {
+						addObserver.add(new SubscriberOdds());
+						System.out.printf("\tEvent %d: SubscriberOdds re-registred\n", i);
+						oddCount = 0;
+					}
+					if (threeCount >= 6) {
+						addObserver.add(new SubscriberThrees());
+						System.out.printf("\tEvent %d: SubscriberThrees re-registred\n", i);
+						threeCount = 0;
+					}
 				}
-
 			}
 
-			if (three && pub.subscribers.contains(subThrees)) {
-
-				if (threeCount >= 6) {
-					pub.removeObserver(subThrees);
-					System.out.println("The Subscriber Threes is removed because it is assigned to more than 6 events \n");
-					threeCount = 0;
-				} else {
-
-					threeCount += 1;
-					System.out.printf(" This event is %d Subscriber Three ", threeCount, " \n ");
+			if (!rmObserver.isEmpty()) {
+				for (Observer o : rmObserver) {
+					removeObserver(o);
 				}
-
 			}
 
-			if (i == 40 || i == 80 || i == 160 || i == 120 || i == 200) {
-				if (pub.subscribers.contains(subOdds) == false) {
-					pub.registerObserver(subOdds);
-					System.out.printf("The Subscriber Odds is re-registred at the event number %d ", i, " \n ");
+			if (!addObserver.isEmpty()) {
+				for (Observer o : addObserver) {
+					registerObserver(o);
 				}
-
-				if (pub.subscribers.contains(subThrees) == false) {
-					pub.registerObserver(subThrees);
-					System.out.printf("The Subscriber Threes is re-registred at the event number %d", i, " \n ");
-				}
-
 			}
-
 		}
-
 	}
-
 }
