@@ -53,7 +53,7 @@ public class PublisherImplementation implements PublisherInterface {
 						System.out.println("\tSubscriberOdds unregistered: assigned to 20 events");
 					} else {
 						oddCount += 1;
-						System.out.printf("\tSubscriberOdds event count: %d\n", oddCount);
+						System.out.printf("\tOdd event count: %d\n", oddCount);
 					}
 				} else if (status && o.getClass() == SubscriberThrees.class) {
 					if (threeCount >= 6) {
@@ -61,7 +61,7 @@ public class PublisherImplementation implements PublisherInterface {
 						System.out.println("\tSubscriberThrees unregistered: assigned to 6 events");
 					} else {
 						threeCount += 1;
-						System.out.printf("\tSubscriberThrees event count: %d\n", threeCount);
+						System.out.printf("\tThrees event count: %d\n", threeCount);
 					}
 				} else if (iterationStops.contains(i) && o.getClass() == SubscriberEvens.class) {
 					if (oddCount >= 20) {
